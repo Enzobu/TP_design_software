@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP DRY — Don't Repeat Yourself</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'JetBrains Mono', monospace; }
+        .box-objectif  { border-left: 4px solid #3b82f6; background-color: #eff6ff; }
+        .box-concept   { border-left: 4px solid #8b5cf6; background-color: #faf5ff; }
+        .box-tache     { border-left: 4px solid #0ea5e9; background-color: #f0f9ff; }
+        .box-validation{ border-left: 4px solid #10b981; background-color: #ecfdf5; }
+        .box-warning   { border-left: 4px solid #ef4444; background-color: #fef2f2; }
+        .box-tip       { border-left: 4px solid #06b6d4; background-color: #ecfeff; }
+        .box-reflexion { border-left: 4px solid #f59e0b; background-color: #fffbeb; }
+        .section-badge { display:inline-flex;align-items:center;justify-content:center;width:3rem;height:3rem;border-radius:9999px;font-size:1.5rem;font-weight:700;color:white;flex-shrink:0;margin-right:1rem; }
+        details summary { cursor:pointer; user-select:none; }
+        .nav-link { transition: color 0.2s; }
+        .nav-link:hover { color: #60a5fa; }
+        .dup-highlight { background: #fef08a; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+<header class="bg-slate-900 text-white shadow-xl sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto p-4">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">D</div>
+                <div>
+                    <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Principes de conception — TP 2/4</div>
+                    <h1 class="text-xl font-bold">DRY — Don't Repeat Yourself</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+                <a href="kiss-enonce.html" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded font-semibold">← TP KISS</a>
+                <span class="text-slate-400">|</span>
+                <a href="yagni-enonce.html" class="bg-orange-700 hover:bg-orange-600 text-white px-3 py-1 rounded font-semibold">TP YAGNI →</a>
+            </div>
+        </div>
+        <nav class="flex space-x-4 text-xs font-semibold overflow-x-auto pb-1 whitespace-nowrap">
+            <a href="#principe"   class="nav-link text-blue-400">1. Principe</a>
+            <a href="#depart"     class="nav-link text-red-400">2. Code de départ</a>
+            <a href="#mission"    class="nav-link text-sky-400">3. Mission</a>
+            <a href="#validation" class="nav-link text-green-400">4. Validation</a>
+        </nav>
+    </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 lg:p-6 mt-4 flex-grow space-y-16">
+
+    <!-- ═══════ SECTION 1 — PRINCIPE -->
+    <section id="principe" class="scroll-mt-32">
+        <div class="flex items-center mb-6">
+            <span class="section-badge bg-blue-600">1</span>
+            <h2 class="text-3xl font-bold text-slate-800">Le Principe DRY</h2>
+        </div>
+        <div class="box-concept p-5 rounded-xl shadow-sm mb-6">
+            <h3 class="font-bold text-purple-900 mb-2"><i class="fa-solid fa-graduation-cap mr-2"></i>Définition — Andy Hunt & Dave Thomas, The Pragmatic Programmer (1999)</h3>
+            <p class="text-sm text-purple-800 mb-3"><em>"Every piece of knowledge must have a single, unambiguous, authoritative representation within a system."</em></p>
+            <p class="text-sm text-purple-800">En pratique : si vous modifiez une règle métier et que vous devez toucher plus d'un endroit dans le code, <strong>DRY est violé</strong>. Le copier-coller de logique est l'ennemi n°1 de la maintenabilité.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm">
+                <p class="font-bold text-red-800 mb-2"><i class="fa-solid fa-xmark mr-1"></i>Symptômes de violation DRY</p>
+                <ul class="text-red-700 space-y-1 text-xs">
+                    <li>• Copier-coller d'une même formule dans plusieurs méthodes</li>
+                    <li>• Modifier un taux de taxe oblige à toucher 3 fichiers</li>
+                    <li>• Code identique dans plusieurs contrôleurs / services</li>
+                    <li>• SonarQube signale des "Duplicated Lines"</li>
+                </ul>
+            </div>
+            <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-sm">
+                <p class="font-bold text-green-800 mb-2"><i class="fa-solid fa-check mr-1"></i>Après refactoring DRY</p>
+                <ul class="text-green-700 space-y-1 text-xs">
+                    <li>• La règle métier vit à un seul endroit</li>
+                    <li>• Changer le taux de taxe = modifier 1 ligne</li>
+                    <li>• Les méthodes spécifiques délèguent à la logique commune</li>
+                    <li>• SonarQube : Duplications = 0.0%</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 2 — CODE DE DÉPART -->
+    <section id="depart" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="section-badge bg-red-500">2</span>
+            <h2 class="text-3xl font-bold text-slate-800">Code de départ <span class="text-red-500 text-xl ml-2">— à refactorer</span></h2>
+        </div>
+
+        <div class="box-warning p-4 rounded-xl mb-6 text-sm">
+            <p class="font-bold text-red-900 mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Contexte</p>
+            <p class="text-red-800">Un apprenti développeur a créé trois routes de paiement pour les guildes de la taverne. Le code <strong>fonctionne</strong>. Analysez-le attentivement avant de commencer à le modifier.</p>
+        </div>
+
+        <!-- Fichiers à ouvrir dans le projet starter -->
+        <p class="text-sm text-slate-600 mb-4">Ouvrez le projet <strong>starter</strong> dans votre IDE et travaillez directement sur les fichiers suivants :</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+            <div class="bg-slate-800 rounded-lg p-4 flex items-center gap-4">
+                <i class="fa-solid fa-file-code text-slate-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <p class="code-font text-sm text-white font-bold">PaymentRequest.java</p>
+                    <p class="text-xs text-slate-400">com.taverne.dry.model</p>
+                    <p class="text-xs text-slate-300 mt-1">DTO — ne pas modifier</p>
+                </div>
+            </div>
+            <div class="bg-slate-800 rounded-lg p-4 flex items-center gap-4 border border-red-700">
+                <i class="fa-solid fa-file-code text-red-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <p class="code-font text-sm text-white font-bold">PaymentController.java</p>
+                    <p class="text-xs text-slate-400">com.taverne.dry.controller</p>
+                    <p class="text-xs text-slate-300 mt-1">Contient les 3 routes de paiement des guildes</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-reflexion rounded-xl p-5 mt-6 text-sm">
+            <p class="font-bold text-amber-900 mb-3"><i class="fa-solid fa-lightbulb mr-2"></i>Réflexions pour votre rapport</p>
+            <ul class="text-amber-800 space-y-2">
+                <li><strong>1.</strong> Que pensez-vous de la qualité de ce code ? Justifiez votre analyse.</li>
+                <li><strong>2.</strong> Imaginez que le taux de taxe ou la formule de calcul évolue. Qu'est-ce que cela implique concrètement dans ce code ? Est-ce satisfaisant ?</li>
+                <li><strong>3.</strong> Comment refactoreriez-vous ce code pour le rendre plus maintenable ? Décrivez et justifiez votre approche.</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <!-- ═══════ SECTION 3 — MISSION -->
+    <section id="mission" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="section-badge bg-sky-600">3</span>
+            <h2 class="text-3xl font-bold text-slate-800">Mission</h2>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Tâches à réaliser</h3>
+            <ol class="space-y-4 text-sm">
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Ouvrez le projet starter dans votre IDE</p>
+                        <p class="text-slate-600">Lancez l'application et vérifiez que les 3 routes <code class="bg-slate-100 px-1 rounded code-font">/warrior</code>, <code class="bg-slate-100 px-1 rounded code-font">/mage</code>, <code class="bg-slate-100 px-1 rounded code-font">/rogue</code> répondent correctement avant de modifier quoi que ce soit.</p>
+                    </div>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Créez un service de calcul dédié</p>
+                        <p class="text-slate-600">Extrayez la logique commune dans une classe annotée <code class="bg-slate-100 px-1 rounded code-font">@Service</code>. Le contrôleur doit déléguer à ce service via injection de dépendances.</p>
+                    </div>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Conservez les 3 routes et leurs spécificités</p>
+                        <p class="text-slate-600">Les routes <code class="bg-slate-100 px-1 rounded code-font">/warrior</code>, <code class="bg-slate-100 px-1 rounded code-font">/mage</code>, <code class="bg-slate-100 px-1 rounded code-font">/rogue</code> doivent continuer à exister et renvoyer les bons résultats. Seule la logique dupliquée doit migrer dans le service.</p>
+                    </div>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Test de régression</p>
+                        <p class="text-slate-600">Vérifiez via Postman/cURL que les 3 routes renvoient les mêmes résultats qu'avant le refactoring. Le comportement ne doit pas changer.</p>
+                    </div>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">5</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Vérifiez avec SonarQube</p>
+                        <p class="text-slate-600">Lancez l'analyse. La métrique <strong>Duplicated Lines (%)</strong> doit afficher <strong>0.0%</strong>.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="box-tip p-4 rounded-xl mt-4 text-sm">
+            <p class="font-bold text-cyan-900 mb-1"><i class="fa-solid fa-circle-info mr-2"></i>Contrainte DRY à respecter</p>
+            <p class="text-cyan-800">La formule <strong>prix × quantité</strong> et le calcul de la <strong>taxe standard du Roi (5%)</strong> ne doivent apparaître qu'<strong>une seule fois</strong> dans tout le code source après votre refactoring.</p>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 4 — VALIDATION -->
+    <section id="validation" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="section-badge bg-green-600">4</span>
+            <h2 class="text-3xl font-bold text-slate-800">Validation</h2>
+        </div>
+
+        <div class="box-validation p-5 rounded-xl mb-6">
+            <h4 class="font-bold text-emerald-900 mb-3"><i class="fa-solid fa-circle-check mr-2"></i>Checklist de livraison</h4>
+            <div class="space-y-2 text-sm">
+                <label class="flex items-start gap-2 text-emerald-800"><input type="checkbox" class="mt-1"> La formule <code class="bg-emerald-100 px-1 rounded">price × quantity</code> n'apparaît qu'une seule fois dans tout le projet</label>
+                <label class="flex items-start gap-2 text-emerald-800"><input type="checkbox" class="mt-1"> Le taux 0.05 (taxe Roi) n'apparaît qu'une seule fois dans tout le projet</label>
+                <label class="flex items-start gap-2 text-emerald-800"><input type="checkbox" class="mt-1"> Les 3 routes répondent avec les mêmes montants qu'avant le refactoring</label>
+                <label class="flex items-start gap-2 text-emerald-800"><input type="checkbox" class="mt-1"> Le contrôleur ne contient plus aucune formule de calcul en dur</label>
+                <label class="flex items-start gap-2 text-emerald-800"><input type="checkbox" class="mt-1"> SonarQube : Duplicated Lines = 0.0%</label>
+                <label class="flex items-start gap-2 text-emerald-800"><input type="checkbox" class="mt-1"> SonarQube : 0 Code Smell, Quality Gate PASSED</label>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-sm">
+            <h4 class="font-bold text-blue-900 mb-2"><i class="fa-solid fa-vial mr-2"></i>Tests attendus (Postman / cURL)</h4>
+            <div class="space-y-3">
+                <div class="bg-white rounded-lg p-3 border border-blue-100 code-font text-xs">
+                    <p class="text-slate-500 mb-1">// Guerrier : 10 po × 3 + taxe 5% + 2 surcharge = 33.5 po</p>
+                    <p class="text-slate-200 bg-slate-800 p-2 rounded">POST /api/payment/warrior → body: {"price": 10, "quantity": 3}</p>
+                    <p class="text-emerald-600 mt-1">→ Réponse attendue : 33.5</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 border border-blue-100 code-font text-xs">
+                    <p class="text-slate-500 mb-1">// Mage : 10 po × 3, pas de taxe = 30 po</p>
+                    <p class="text-slate-200 bg-slate-800 p-2 rounded">POST /api/payment/mage → body: {"price": 10, "quantity": 3}</p>
+                    <p class="text-emerald-600 mt-1">→ Réponse attendue : 30.0</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 border border-blue-100 code-font text-xs">
+                    <p class="text-slate-500 mb-1">// Voleur : 10 po × 3 + taxe 5% = 31.5 po</p>
+                    <p class="text-slate-200 bg-slate-800 p-2 rounded">POST /api/payment/rogue → body: {"price": 10, "quantity": 3}</p>
+                    <p class="text-emerald-600 mt-1">→ Réponse attendue : 31.5</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 text-xs text-center py-4 mt-12">
+    EPSI — Analyse de code &amp; maintenabilité · TP DRY / La Pinte Joyeuse
+</footer>
+
+</body>
+</html>

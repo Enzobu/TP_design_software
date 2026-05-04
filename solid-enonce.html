@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP SOLID — Les 5 Principes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'JetBrains Mono', monospace; }
+        .box-objectif  { border-left: 4px solid #3b82f6; background-color: #eff6ff; }
+        .box-concept   { border-left: 4px solid #8b5cf6; background-color: #faf5ff; }
+        .box-tache     { border-left: 4px solid #0ea5e9; background-color: #f0f9ff; }
+        .box-validation{ border-left: 4px solid #10b981; background-color: #ecfdf5; }
+        .box-warning   { border-left: 4px solid #ef4444; background-color: #fef2f2; }
+        .box-tip       { border-left: 4px solid #06b6d4; background-color: #ecfeff; }
+        .box-reflexion { border-left: 4px solid #f59e0b; background-color: #fffbeb; }
+        .section-badge { display:inline-flex;align-items:center;justify-content:center;width:3rem;height:3rem;border-radius:9999px;font-size:1.5rem;font-weight:700;color:white;flex-shrink:0;margin-right:1rem; }
+        details summary { cursor:pointer; user-select:none; }
+        .nav-link { transition: color 0.2s; }
+        .nav-link:hover { color: #60a5fa; }
+        .solid-letter { display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:6px;font-size:1rem;font-weight:800;flex-shrink:0; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+<header class="bg-slate-900 text-white shadow-xl sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto p-4">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">S</div>
+                <div>
+                    <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Principes de conception — TP 4/4</div>
+                    <h1 class="text-xl font-bold">SOLID — Les 5 Principes d'Architecture</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+                <a href="yagni-enonce.html" class="bg-orange-700 hover:bg-orange-600 text-white px-3 py-1 rounded font-semibold">← TP YAGNI</a>
+                <span class="text-slate-500 px-2 py-1 rounded bg-slate-800">(dernier TP) →</span>
+            </div>
+        </div>
+        <nav class="flex space-x-4 text-xs font-semibold overflow-x-auto pb-1 whitespace-nowrap">
+            <a href="#principes"  class="nav-link text-violet-400">1. Les 5 principes</a>
+            <a href="#depart"     class="nav-link text-red-400">2. Code de départ</a>
+            <a href="#srp"        class="nav-link text-sky-400">3. S — SRP</a>
+            <a href="#ocp"        class="nav-link text-green-400">4. O — OCP</a>
+            <a href="#lsp"        class="nav-link text-yellow-400">5. L — LSP</a>
+            <a href="#isp"        class="nav-link text-orange-400">6. I — ISP</a>
+            <a href="#dip"        class="nav-link text-pink-400">7. D — DIP</a>
+            <a href="#validation" class="nav-link text-emerald-400">8. Validation</a>
+        </nav>
+    </div>
+</header>
+
+<main class="max-w-5xl mx-auto p-4 lg:p-6 mt-4 flex-grow space-y-16">
+
+    <!-- ═══════ SECTION 1 — LES 5 PRINCIPES -->
+    <section id="principes" class="scroll-mt-32">
+        <div class="flex items-center mb-6">
+            <span class="section-badge bg-violet-600">1</span>
+            <h2 class="text-3xl font-bold text-slate-800">Les 5 Principes SOLID</h2>
+        </div>
+
+        <div class="box-objectif p-5 rounded-xl mb-6">
+            <p class="font-bold text-blue-900 mb-1"><i class="fa-solid fa-bullseye mr-2"></i>Objectif du TP</p>
+            <p class="text-blue-900 text-sm">Vous recevez une base de code existante. Analysez-la au regard de chacun des 5 principes SOLID, puis refactorez-la principe par principe pour obtenir un système maintenable, extensible et testable.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="solid-letter bg-sky-100 text-sky-800">S</span>
+                    <p class="font-bold text-slate-800">Single Responsibility</p>
+                </div>
+                <p class="text-xs text-slate-600">Une classe = une seule raison de changer. Elle ne doit faire qu'une chose, mais la faire bien.</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="solid-letter bg-green-100 text-green-800">O</span>
+                    <p class="font-bold text-slate-800">Open / Closed</p>
+                </div>
+                <p class="text-xs text-slate-600">Ouvert à l'extension, fermé à la modification. Ajouter une feature ne doit pas casser le code existant.</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="solid-letter bg-yellow-100 text-yellow-800">L</span>
+                    <p class="font-bold text-slate-800">Liskov Substitution</p>
+                </div>
+                <p class="text-xs text-slate-600">Un sous-type doit pouvoir remplacer son type parent sans briser le comportement attendu.</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="solid-letter bg-orange-100 text-orange-800">I</span>
+                    <p class="font-bold text-slate-800">Interface Segregation</p>
+                </div>
+                <p class="text-xs text-slate-600">Un client ne doit pas dépendre de méthodes qu'il n'utilise pas. Préférez de petites interfaces ciblées.</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="solid-letter bg-pink-100 text-pink-800">D</span>
+                    <p class="font-bold text-slate-800">Dependency Inversion</p>
+                </div>
+                <p class="text-xs text-slate-600">Dépendez des abstractions, pas des implémentations concrètes. L'injection de dépendances en est l'application directe.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 2 — GOD CLASS -->
+    <section id="depart" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="section-badge bg-red-500">2</span>
+            <h2 class="text-3xl font-bold text-slate-800">Code de départ <span class="text-red-500 text-xl ml-2">— à analyser</span></h2>
+        </div>
+
+        <div class="box-warning p-4 rounded-xl mb-6 text-sm">
+            <p class="font-bold text-red-900 mb-1"><i class="fa-solid fa-folder-open mr-2"></i>Ouvrez le projet starter dans votre IDE</p>
+            <p class="text-red-800">Prenez le temps de lire attentivement chaque fichier avant de commencer à modifier quoi que ce soit.</p>
+        </div>
+
+        <p class="text-sm text-slate-600 mb-4">Ouvrez le projet <strong>starter</strong> dans votre IDE et travaillez directement sur les fichiers suivants :</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+            <div class="bg-slate-800 rounded-lg p-4 flex items-center gap-4 border border-red-700 md:col-span-2">
+                <i class="fa-solid fa-file-code text-red-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <p class="code-font text-sm text-white font-bold">TavernManager.java</p>
+                    <p class="text-xs text-slate-400">com.taverne.solid.controller</p>
+                    <p class="text-xs text-slate-300 mt-1">Classe principale de gestion des commandes</p>
+                </div>
+            </div>
+            <div class="bg-slate-800 rounded-lg p-4 flex items-center gap-4">
+                <i class="fa-solid fa-file-code text-slate-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <p class="code-font text-sm text-white font-bold">SqlNotificationRepository.java</p>
+                    <p class="text-xs text-slate-400">com.taverne.solid.repository</p>
+                    <p class="text-xs text-slate-300 mt-1">Dépôt de notifications</p>
+                </div>
+            </div>
+            <div class="bg-slate-800 rounded-lg p-4 flex items-center gap-4">
+                <i class="fa-solid fa-file-code text-slate-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <p class="code-font text-sm text-white font-bold">IItemActions.java</p>
+                    <p class="text-xs text-slate-400">com.taverne.solid.interfaces</p>
+                    <p class="text-xs text-slate-300 mt-1">Interface regroupant les actions sur les articles</p>
+                </div>
+            </div>
+            <div class="bg-slate-800 rounded-lg p-4 flex items-center gap-4">
+                <i class="fa-solid fa-file-code text-slate-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <p class="code-font text-sm text-white font-bold">ConsumableItem.java</p>
+                    <p class="text-xs text-slate-400">com.taverne.solid.model</p>
+                    <p class="text-xs text-slate-300 mt-1">Classe parente des articles consommables</p>
+                </div>
+            </div>
+            <div class="bg-slate-800 rounded-lg p-4 flex items-center gap-4">
+                <i class="fa-solid fa-file-code text-slate-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <p class="code-font text-sm text-white font-bold">PoisonousDrink.java</p>
+                    <p class="text-xs text-slate-400">com.taverne.solid.model</p>
+                    <p class="text-xs text-slate-300 mt-1">Sous-classe de ConsumableItem</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-reflexion rounded-xl p-5 mt-6 text-sm">
+            <p class="font-bold text-amber-900 mb-3"><i class="fa-solid fa-lightbulb mr-2"></i>Réflexions pour votre rapport</p>
+            <ul class="text-amber-800 space-y-2">
+                <li><strong>1.</strong> Après lecture de ces fichiers, quelle est votre appréciation globale de cette base de code ? Justifiez.</li>
+                <li><strong>2.</strong> Pour chacun des 5 principes SOLID, évaluez si ce code le respecte ou non. Argumentez avec des exemples précis tirés du code.</li>
+                <li><strong>3.</strong> Si vous deviez faire évoluer ce code pour ajouter de nouvelles fonctionnalités, quelles difficultés anticipez-vous ? D'où viennent-elles ?</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 3 — SRP -->
+    <section id="srp" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="solid-letter bg-sky-600 text-white mr-4" style="width:3rem;height:3rem;font-size:1.5rem;border-radius:9999px;">S</span>
+            <h2 class="text-3xl font-bold text-slate-800">Single Responsibility Principle</h2>
+        </div>
+
+        <div class="box-concept p-4 rounded-xl mb-4 text-sm">
+            <p class="text-purple-800"><strong>Rappel :</strong> Une classe ne doit avoir qu'une seule raison de changer. Si plusieurs responsabilités distinctes cohabitent dans une même classe, chaque évolution de l'une risque de casser les autres.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+            <h3 class="font-bold text-slate-800 mb-4">Tâche SRP</h3>
+            <ol class="space-y-3 text-sm">
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <p>Créez un <code class="bg-slate-100 px-1 rounded code-font">OrderService</code> qui centralise la réception et l'enregistrement des commandes.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <p>Créez un <code class="bg-slate-100 px-1 rounded code-font">InventoryService</code> qui possède la logique de vérification et de décrémentation du stock.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                    <p>Créez un <code class="bg-slate-100 px-1 rounded code-font">PricingService</code> qui calcule le prix total d'une commande.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-sky-100 text-sky-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                    <p>Le contrôleur ne fait qu'orchestrer : il reçoit la requête et délègue à ces services.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 4 — OCP -->
+    <section id="ocp" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="solid-letter bg-green-600 text-white mr-4" style="width:3rem;height:3rem;font-size:1.5rem;border-radius:9999px;">O</span>
+            <h2 class="text-3xl font-bold text-slate-800">Open / Closed Principle</h2>
+        </div>
+
+        <div class="box-concept p-4 rounded-xl mb-4 text-sm">
+            <p class="text-purple-800"><strong>Rappel :</strong> Un module doit être ouvert à l'extension (on peut ajouter de nouveaux comportements) mais fermé à la modification (le code existant ne doit pas être changé pour accueillir une nouvelle fonctionnalité).</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+            <h3 class="font-bold text-slate-800 mb-4">Tâche OCP</h3>
+            <ol class="space-y-3 text-sm">
+                <li class="flex gap-3">
+                    <span class="bg-green-100 text-green-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <p>Créez une interface (ou classe abstraite) <code class="bg-slate-100 px-1 rounded code-font">PricingRule</code> avec une méthode <code class="bg-slate-100 px-1 rounded code-font">apply(double baseTotal)</code>.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-green-100 text-green-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <p>Implémentez <code class="bg-slate-100 px-1 rounded code-font">KingTaxRule</code> (5%) et <code class="bg-slate-100 px-1 rounded code-font">NightSurchargeRule</code> (10% après 22h) comme implémentations distinctes.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-green-100 text-green-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                    <p>Le <code class="bg-slate-100 px-1 rounded code-font">PricingService</code> reçoit une <code class="bg-slate-100 px-1 rounded code-font">List&lt;PricingRule&gt;</code> injectée, et itère dessus pour calculer le total.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-green-100 text-green-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                    <p>Ajoutez une <code class="bg-slate-100 px-1 rounded code-font">WeekendDiscountRule</code> (-5%) <strong>sans modifier</strong> le <code class="bg-slate-100 px-1 rounded code-font">PricingService</code>. Si vous devez le modifier, OCP est encore violé.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 5 — LSP -->
+    <section id="lsp" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="solid-letter bg-yellow-500 text-white mr-4" style="width:3rem;height:3rem;font-size:1.5rem;border-radius:9999px;">L</span>
+            <h2 class="text-3xl font-bold text-slate-800">Liskov Substitution Principle</h2>
+        </div>
+
+        <div class="box-concept p-4 rounded-xl mb-4 text-sm">
+            <p class="text-purple-800"><strong>Rappel :</strong> Un objet d'une sous-classe doit pouvoir remplacer un objet de sa classe parente sans que le comportement du programme ne soit altéré. Une sous-classe ne doit pas briser les contrats établis par sa classe parente.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+            <h3 class="font-bold text-slate-800 mb-4">Tâche LSP</h3>
+            <ol class="space-y-3 text-sm">
+                <li class="flex gap-3">
+                    <span class="bg-yellow-100 text-yellow-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <p>Créez la classe <code class="bg-slate-100 px-1 rounded code-font">ConsumableItem</code> avec la méthode <code class="bg-slate-100 px-1 rounded code-font">boolean isSafeToConsume()</code> retournant <code class="bg-slate-100 px-1 rounded code-font">true</code> par défaut.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-yellow-100 text-yellow-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <p>Créez <code class="bg-slate-100 px-1 rounded code-font">PoisonousDrink extends ConsumableItem</code> qui <strong>retourne</strong> <code class="bg-slate-100 px-1 rounded code-font">false</code> (sans lancer d'exception).</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-yellow-100 text-yellow-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                    <p>Écrivez un code client qui itère une <code class="bg-slate-100 px-1 rounded code-font">List&lt;ConsumableItem&gt;</code> contenant à la fois un item standard et un <code class="bg-slate-100 px-1 rounded code-font">PoisonousDrink</code>, et vérifiez qu'aucune exception n'est levée.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 6 — ISP -->
+    <section id="isp" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="solid-letter bg-orange-500 text-white mr-4" style="width:3rem;height:3rem;font-size:1.5rem;border-radius:9999px;">I</span>
+            <h2 class="text-3xl font-bold text-slate-800">Interface Segregation Principle</h2>
+        </div>
+
+        <div class="box-concept p-4 rounded-xl mb-4 text-sm">
+            <p class="text-purple-800"><strong>Rappel :</strong> Un client ne doit pas être forcé de dépendre de méthodes qu'il n'utilise pas. Préférez plusieurs interfaces spécifiques à une seule interface générale qui regroupe tout.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+            <h3 class="font-bold text-slate-800 mb-4">Tâche ISP</h3>
+            <ol class="space-y-3 text-sm">
+                <li class="flex gap-3">
+                    <span class="bg-orange-100 text-orange-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <p>Supprimez l'interface <code class="bg-slate-100 px-1 rounded code-font">IItemActions</code>.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-orange-100 text-orange-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <p>Créez <code class="bg-slate-100 px-1 rounded code-font">ICookable</code> (avec <code class="bg-slate-100 px-1 rounded code-font">cook()</code> et <code class="bg-slate-100 px-1 rounded code-font">roast()</code>) et <code class="bg-slate-100 px-1 rounded code-font">IPourable</code> (avec <code class="bg-slate-100 px-1 rounded code-font">pourIntoMug()</code>).</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-orange-100 text-orange-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                    <p>Créez deux classes : <code class="bg-slate-100 px-1 rounded code-font">Bread implements ICookable</code> et <code class="bg-slate-100 px-1 rounded code-font">Ale implements IPourable</code>. Aucune des deux ne devrait avoir de méthode qui ne la concerne pas.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 7 — DIP -->
+    <section id="dip" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="solid-letter bg-pink-600 text-white mr-4" style="width:3rem;height:3rem;font-size:1.5rem;border-radius:9999px;">D</span>
+            <h2 class="text-3xl font-bold text-slate-800">Dependency Inversion Principle</h2>
+        </div>
+
+        <div class="box-concept p-4 rounded-xl mb-4 text-sm">
+            <p class="text-purple-800"><strong>Rappel :</strong> Les modules de haut niveau ne doivent pas dépendre des modules de bas niveau. Les deux doivent dépendre d'abstractions. Dépendre d'une implémentation concrète rend le code rigide et difficile à tester.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+            <h3 class="font-bold text-slate-800 mb-4">Tâche DIP</h3>
+            <ol class="space-y-3 text-sm">
+                <li class="flex gap-3">
+                    <span class="bg-pink-100 text-pink-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <p>Créez une interface <code class="bg-slate-100 px-1 rounded code-font">INotificationRepository</code> avec une méthode <code class="bg-slate-100 px-1 rounded code-font">save(String message)</code>.</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-pink-100 text-pink-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <p>Créez <code class="bg-slate-100 px-1 rounded code-font">InMemoryNotificationRepository implements INotificationRepository</code> qui simule la persistance (pour ce TP, un simple <code class="bg-slate-100 px-1 rounded code-font">System.out.println</code> suffit).</p>
+                </li>
+                <li class="flex gap-3">
+                    <span class="bg-pink-100 text-pink-800 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                    <p>L'<code class="bg-slate-100 px-1 rounded code-font">OrderService</code> reçoit l'<code class="bg-slate-100 px-1 rounded code-font">INotificationRepository</code> par <strong>injection de constructeur</strong> (Spring s'en charge avec <code class="bg-slate-100 px-1 rounded code-font">@Autowired</code>). Il ne fait jamais <code class="bg-slate-100 px-1 rounded code-font">new Xyz()</code>.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ═══════ SECTION 8 — VALIDATION -->
+    <section id="validation" class="scroll-mt-32 border-t pt-10">
+        <div class="flex items-center mb-6">
+            <span class="section-badge bg-green-600">8</span>
+            <h2 class="text-3xl font-bold text-slate-800">Validation finale</h2>
+        </div>
+
+        <div class="box-validation p-5 rounded-xl mb-6">
+            <h4 class="font-bold text-emerald-900 mb-3"><i class="fa-solid fa-circle-check mr-2"></i>Checklist SOLID complète</h4>
+            <div class="space-y-2 text-sm">
+                <p class="font-semibold text-slate-700 mt-2">S — Single Responsibility</p>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> OrderService, InventoryService et PricingService existent en classes séparées</label>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> Chaque service peut donner "une seule raison de changer"</label>
+                <p class="font-semibold text-slate-700 mt-2">O — Open / Closed</p>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> L'ajout de WeekendDiscountRule ne modifie pas PricingService</label>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> PricingService itère sur une List&lt;PricingRule&gt; sans connaitre les implémentations</label>
+                <p class="font-semibold text-slate-700 mt-2">L — Liskov Substitution</p>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> Itérer List&lt;ConsumableItem&gt; avec un PoisonousDrink dedans ne lève aucune exception</label>
+                <p class="font-semibold text-slate-700 mt-2">I — Interface Segregation</p>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> IItemActions supprimée — remplacée par ICookable et IPourable</label>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> Bread n'implémente pas pourIntoMug()</label>
+                <p class="font-semibold text-slate-700 mt-2">D — Dependency Inversion</p>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> Aucun "new XyzRepository()" dans OrderService</label>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> INotificationRepository injectée par constructeur</label>
+                <p class="font-semibold text-slate-700 mt-2">SonarQube</p>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> Maintainability Rating : A</label>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> Complexité cyclomatique moyenne &lt; 5 par méthode</label>
+                <label class="flex items-start gap-2 text-emerald-800 ml-4"><input type="checkbox" class="mt-1"> Quality Gate : PASSED</label>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 text-xs text-center py-4 mt-12">
+    EPSI — Analyse de code &amp; maintenabilité · TP SOLID / La Pinte Joyeuse
+</footer>
+
+</body>
+</html>
